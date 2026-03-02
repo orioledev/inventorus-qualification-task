@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Psr\Log\LoggerInterface;
 
+class SearchUnavailableException extends RuntimeException
+{
+}
+
 interface QueryNormalizerInterface
 {
     public function normalize(string $rawQuery): string;
@@ -72,7 +76,7 @@ final readonly class SearchPipelineOrchestrator
     }
 
     /**
-     * @throws Throwable
+     * @throws SearchUnavailableException
      */
     public function handle(string $rawQuery, int $page = 1, int $perPage = 20): array
     {
@@ -95,10 +99,13 @@ final readonly class SearchPipelineOrchestrator
 
                 $this->searchCache->set($searchPage, $searchResults);
             } catch (\Throwable $e) {
-                $this->logger->error('Elasticsearch search error ', [
+                $this->logger->error('Elasticsearch search error', [
                     'message' => $e->getMessage(),
                 ]);
-                throw $e;
+                throw new SearchUnavailableException(
+                    'Search is temporarily unavailable',
+                    previous: $e,
+                );
             }
         }
 
