@@ -77,6 +77,13 @@ final readonly class OutboxRelay
                     'message' => $e->getMessage(),
                 ]);
                 $published = 0;
+            } catch (\Throwable $e) {
+                $this->logger->critical('Unexpected relay error', [
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                $published = 0;
             }
 
             if ($published === 0) {
