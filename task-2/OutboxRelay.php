@@ -55,8 +55,8 @@ final readonly class OutboxRelay
         private LoggerInterface $logger,
         private int $batchSize = 100,
         private int $pollIntervalMs = 1_000,
-    ) {
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    )
+    {
     }
 
     /**
