@@ -97,7 +97,9 @@ final readonly class NotificationEventHandler
                 $this->handleNext();
             } catch (\Throwable $e) {
                 $this->logger->error('Handler error', [
+                    'exception' => get_class($e),
                     'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
                 ]);
 
                 // @todo implement exponential backoff
